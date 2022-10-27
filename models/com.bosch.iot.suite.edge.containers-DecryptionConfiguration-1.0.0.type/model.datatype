@@ -1,0 +1,11 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "DecryptionConfiguration"
+description "Represents the data needed for image decryption"
+
+entity DecryptionConfiguration {
+    optional multiple keys as string "Private keys (GPG private key ring, JWE or PKCS7) used for decrypting the container's image, the format is: filepath_private_key[:password]"
+
+    optional multiple recipients as string "Recipients (only for PKCS7 and must be an x509) used for decrypting the container's image, the format is: pkcs7:filepath_x509_certificate"
+}

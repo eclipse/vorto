@@ -1,0 +1,1043 @@
+{
+  "root" : {
+    "name" : "Configuration",
+    "namespace" : "com.bosch.iot.suite.edge.containers",
+    "version" : "1.3.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:Configuration:1.3.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RestartPolicyType",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "RestartPolicyType",
+      "description" : "Represents the container's restart policy type - always means that each time te container exists, it will be restarted.",
+      "category" : null,
+      "fileName" : "RestartPolicyType.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "ALWAYS",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      }, {
+        "name" : "UNLESS_STOPPED",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      }, {
+        "name" : "ON_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      }, {
+        "name" : "NO",
+        "description" : null,
+        "parent" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PropagationMode",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "PropagationMode",
+      "description" : "Represents the propagation mode for populating the mounted filesystem artifacts from the host to the container",
+      "category" : null,
+      "fileName" : "PropagationMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "RPRIVATE",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      }, {
+        "name" : "PRIVATE",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      }, {
+        "name" : "RSHARED",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      }, {
+        "name" : "SHARED",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      }, {
+        "name" : "RSLAVE",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      }, {
+        "name" : "SLAVE",
+        "description" : null,
+        "parent" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.containers:PortMapping:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "PortMapping",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:PortMapping:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "PortMapping",
+      "description" : "Represents a network port mappings for ports from the container exposed on the host's network interface",
+      "category" : null,
+      "fileName" : "PortMapping.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "proto",
+        "description" : "Port protocol",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "hostPort",
+        "description" : "Port of the host machine",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "hostPortEnd",
+        "description" : "Host port allocation range",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "containerPort",
+        "description" : "Port inside the container",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "hostIP",
+        "description" : "IP Address of the port to be mapped",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.containers:LogDriver:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LogDriver",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogDriver:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "LogDriver",
+      "description" : "Represents the different supported types of logging that can be made for a container instance",
+      "category" : null,
+      "fileName" : "LogDriver.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "JSON_FILE",
+        "description" : null,
+        "parent" : {
+          "name" : "LogDriver",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogDriver:1.0.0"
+        }
+      }, {
+        "name" : "NONE",
+        "description" : null,
+        "parent" : {
+          "name" : "LogDriver",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogDriver:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.containers:Device:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Device",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:Device:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Device",
+      "description" : "Represents a serial device exposed from the host to the container mapped to a certain internal container's path",
+      "category" : null,
+      "fileName" : "Device.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "pathOnHost",
+        "description" : "Device path on the host machine",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "pathInContainer",
+        "description" : "Device path inside the container",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "cgroupPermissions",
+        "description" : "cgroup permissions",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.containers:LogMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LogMode",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "LogMode",
+      "description" : "Represents the log messages handling mode (buffered or direct) from the container to the log driver",
+      "category" : null,
+      "fileName" : "LogMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "BLOCKING",
+        "description" : null,
+        "parent" : {
+          "name" : "LogMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogMode:1.0.0"
+        }
+      }, {
+        "name" : "NON_BLOCKING",
+        "description" : null,
+        "parent" : {
+          "name" : "LogMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogMode:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.containers:MountPoint:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "MountPoint",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:MountPoint:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "MountPoint",
+      "description" : "Represents filesystem artifacts mounted from the host to the container",
+      "category" : null,
+      "fileName" : "MountPoint.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "PropagationMode",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "source",
+        "description" : "Path to the source mount point",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "destination",
+        "description" : "Path to the container mount point",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "propagationMode",
+        "description" : "Propagation mode of the mount point",
+        "type" : {
+          "name" : "PropagationMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PropagationMode:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.containers:Resources:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Resources",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:Resources:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Resources",
+      "description" : "Represents the container's resource constraints",
+      "category" : null,
+      "fileName" : "Resources.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "memory",
+        "description" : "Hard memory limit. The maximum amount of memory the container can use in the form of an integer followed by a modifier representing the unit of measure (k, M or G). The minimum allowed value is 3M.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "memoryReservation",
+        "description" : "Soft memory limit for the container in the form of an integer followed by a modifier representing the unit of measure (k, M or G). If set, must be smaller than memory.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "memorySwap",
+        "description" : "Total amount of memory + swap that the container can use in the form of an integer followed by a modifier representing the unit of measure (k, M or G). If set must not be smaller than memory. If equal to memory, than the container will not have access to swap. If not set and memory is set, than the container can use as much swap as the memory setting. If set to -1, the container can use unlimited swap, up to the amount available on the host.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.containers:NetworkMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "NetworkMode",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:NetworkMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "NetworkMode",
+      "description" : "Represents the container's networking capabilities type based on the desired communication mode",
+      "category" : null,
+      "fileName" : "NetworkMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "BRIDGE",
+        "description" : null,
+        "parent" : {
+          "name" : "NetworkMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:NetworkMode:1.0.0"
+        }
+      }, {
+        "name" : "HOST",
+        "description" : null,
+        "parent" : {
+          "name" : "NetworkMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:NetworkMode:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.containers:LogConfiguration:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "LogConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogConfiguration:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "LogConfiguration",
+      "description" : "Represents the full logging configuration for a container instance",
+      "category" : null,
+      "fileName" : "LogConfiguration.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "LogMode",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogMode:1.0.0"
+      }, {
+        "name" : "LogDriver",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogDriver:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "type",
+        "description" : "Indicates what kind of logging will be made for this container instance. The default is JSON_FILE",
+        "type" : {
+          "name" : "LogDriver",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogDriver:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxFiles",
+        "description" : "The maximum number of log files permitted. If the rolled logs output creates excess files, the oldest one is removed",
+        "type" : "INT",
+        "constraints" : [ {
+          "type" : "DEFAULT",
+          "value" : "2"
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxSize",
+        "description" : "The maximum size of the log before it is rolled. Must be in the form of an integer followed by a modifier representing the unit of measure (k, M, G or T)",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "DEFAULT",
+          "value" : "\"100M\""
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "rootDir",
+        "description" : "The root directory where to store the logs for the container under a subdirectory named by its ID",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "mode",
+        "description" : "Log messages handling mode (buffered or direct) from the container to the log driver",
+        "type" : {
+          "name" : "LogMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogMode:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxBufferSize",
+        "description" : "The maximum size of the log buffer it is rolled. Must be in the form of an integer followed by a modifier representing the unit of measure (k, M, G or T)",
+        "type" : "STRING",
+        "constraints" : [ {
+          "type" : "DEFAULT",
+          "value" : "\"1M\""
+        } ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.containers:Configuration:1.3.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Configuration",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.3.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:Configuration:1.3.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Configuration",
+      "description" : "Represents a fully featured container configuration supported by the Bosch IoT Edge Agent",
+      "category" : null,
+      "fileName" : "Configuration.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "MountPoint",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:MountPoint:1.0.0"
+      }, {
+        "name" : "Device",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:Device:1.0.0"
+      }, {
+        "name" : "RestartPolicy",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicy:1.0.0"
+      }, {
+        "name" : "PortMapping",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:PortMapping:1.0.0"
+      }, {
+        "name" : "LogConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogConfiguration:1.0.0"
+      }, {
+        "name" : "Resources",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:Resources:1.0.0"
+      }, {
+        "name" : "NetworkMode",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:NetworkMode:1.0.0"
+      }, {
+        "name" : "DecryptionConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:DecryptionConfiguration:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "domainName",
+        "description" : "The container domain",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "hostName",
+        "description" : "Host name for the container, if omitted the container name with suffix -host will be set",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "mountPoints",
+        "description" : "The container's mount points",
+        "type" : {
+          "name" : "MountPoint",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:MountPoint:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "env",
+        "description" : "Environmental variables that can be set for the container",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "cmd",
+        "description" : "Command with arguments that is executed when the container is started",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "decryption",
+        "description" : "Keys and recipients for image decryption",
+        "type" : {
+          "name" : "DecryptionConfiguration",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:DecryptionConfiguration:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "devices",
+        "description" : "Host devices accessible by the container",
+        "type" : {
+          "name" : "Device",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Device:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "privileged",
+        "description" : "Indicates if the container must be run in privileged mode",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "restartPolicy",
+        "description" : "Restart policy for the container instance",
+        "type" : {
+          "name" : "RestartPolicy",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicy:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "extraHosts",
+        "description" : "Host aliases to be added to the container's networking configuration",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "portMappings",
+        "description" : "Ports exposed from the container to the host",
+        "type" : {
+          "name" : "PortMapping",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:PortMapping:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "networkMode",
+        "description" : "The container's networking capabilities type based on the desired communication mode",
+        "type" : {
+          "name" : "NetworkMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:NetworkMode:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "openStdin",
+        "description" : "Open stdin for interactive mode",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "tty",
+        "description" : "Attach standard streams to a TTY, including stdin if it is not closed",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "log",
+        "description" : "Represents the logging configuration for the container",
+        "type" : {
+          "name" : "LogConfiguration",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:LogConfiguration:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "resources",
+        "description" : "Represents the resource limits for the container. By default, a container has no resource constraints.",
+        "type" : {
+          "name" : "Resources",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:Resources:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.containers:RestartPolicy:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "RestartPolicy",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicy:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "RestartPolicy",
+      "description" : "Represents the container's restart policy configuratoin",
+      "category" : null,
+      "fileName" : "RestartPolicy.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "RestartPolicyType",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "maxRetryCount",
+        "description" : "Max number of restart attempts",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "retryTimeout",
+        "description" : "Retry timeout in seconds",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "type",
+        "description" : "The type of the container's restart policy",
+        "type" : {
+          "name" : "RestartPolicyType",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:RestartPolicyType:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.containers:DecryptionConfiguration:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DecryptionConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:DecryptionConfiguration:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "DecryptionConfiguration",
+      "description" : "Represents the data needed for image decryption",
+      "category" : null,
+      "fileName" : "DecryptionConfiguration.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "keys",
+        "description" : "Private keys (GPG private key ring, JWE or PKCS7) used for decrypting the container's image, the format is: filepath_private_key[:password]",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "recipients",
+        "description" : "Recipients (only for PKCS7 and must be an x509) used for decrypting the container's image, the format is: pkcs7:filepath_x509_certificate",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

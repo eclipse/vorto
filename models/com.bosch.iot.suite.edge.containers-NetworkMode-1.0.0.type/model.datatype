@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.0.0
+displayname "NetworkMode"
+description "Represents the container's networking capabilities type based on the desired communication mode"
+
+enum NetworkMode {
+	BRIDGE,
+	HOST
+}

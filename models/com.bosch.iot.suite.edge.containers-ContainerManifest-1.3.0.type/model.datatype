@@ -1,0 +1,12 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.3.0
+displayname "ContainerManifest"
+description "Represents the full configuration for a container that can be provided in a manifest"
+using com.bosch.iot.suite.edge.containers.Configuration ; 1.3.0
+
+entity ContainerManifest {
+    mandatory name as string "The name of the container this configuration must be applied for. It is the container's identifier in the scope of the edge containers runtime when manifests are used, thus, it must be unique"
+    mandatory imageRef as string "The full container image reference to be used for the container"
+    optional config as Configuration "The full container's runtime configuration"
+}

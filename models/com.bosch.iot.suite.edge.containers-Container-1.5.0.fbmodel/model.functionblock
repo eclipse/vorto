@@ -1,0 +1,34 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.5.0
+displayname "Container"
+description "Provides lifecycle management functionalities per container and enhances container state changes traceability"
+using com.bosch.iot.suite.edge.containers.Configuration ; 1.3.0
+using com.bosch.iot.suite.edge.containers.State ; 1.1.0
+using com.bosch.iot.suite.edge.containers.StopOptions ; 1.1.0
+using com.bosch.iot.suite.edge.containers.UpdateOptions ; 1.1.0
+
+functionblock Container {
+	status {
+		optional name as string "The container's user-friendly name"
+        mandatory imageRef as
+		string "The container's image full reference in the format <host/ip[:port]>/<image-name>:<tag>"
+
+		optional config as
+		Configuration "Provides the read-only container's configuration provided when the container was created"
+        mandatory createdAt as string "A container's creation timestamp"
+        mandatory state as State "The current container's state"
+  }
+
+	operations {
+	   start() "Starts the container instance"
+       pause() "Pauses the container instance"
+       resume() "Resumes the container instance"
+       stop() "Stops the container instance"
+       stopWithOptions(options as StopOptions) "Stops the container instance applying the provided options"
+       remove(force as boolean) "Removes the container instance and feature (if the removal is successful) and forces the removal if the container is runing"
+       rename(name as string) "Renames the container instance."
+       update(options as UpdateOptions) "Updates the container instance with the provided options."
+  }
+
+}

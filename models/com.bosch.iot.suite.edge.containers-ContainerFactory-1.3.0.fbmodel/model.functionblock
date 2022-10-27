@@ -1,0 +1,18 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.3.0
+displayname "ContainerFactory"
+description "Provides the containers creation functionality"
+using com.bosch.iot.suite.edge.containers.Configuration ; 1.3.0
+
+functionblock ContainerFactory {
+	operations {
+		create(imageRef as string,
+			start as boolean) returns string "Creates a new container instance using the provided image ref applying the default config for a container"
+    createWithConfig(imageRef as string,
+			name as string,
+			config as Configuration,
+			start as boolean) returns string "Creates a new container instance and a feature must be registered based on the provided config"
+  }
+
+}

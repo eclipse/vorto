@@ -1,0 +1,48 @@
+{
+  "root" : {
+    "name" : "NetworkMode",
+    "namespace" : "com.bosch.iot.suite.edge.containers",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:NetworkMode:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.containers:NetworkMode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "NetworkMode",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:NetworkMode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "NetworkMode",
+      "description" : "Represents the container's networking capabilities type based on the desired communication mode",
+      "category" : null,
+      "fileName" : "NetworkMode.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "BRIDGE",
+        "description" : null,
+        "parent" : {
+          "name" : "NetworkMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:NetworkMode:1.0.0"
+        }
+      }, {
+        "name" : "HOST",
+        "description" : null,
+        "parent" : {
+          "name" : "NetworkMode",
+          "namespace" : "com.bosch.iot.suite.edge.containers",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.containers:NetworkMode:1.0.0"
+        }
+      } ]
+    }
+  }
+}

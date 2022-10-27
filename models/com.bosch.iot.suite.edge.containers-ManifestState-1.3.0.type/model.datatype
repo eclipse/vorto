@@ -1,0 +1,14 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.3.0
+displayname "ManifestState"
+description "Represents the state which is a result of the manifest processing done"
+using com.bosch.iot.suite.edge.containers.Manifest ; 1.3.0
+using com.bosch.iot.suite.edge.containers.ManifestStatus ; 1.0.0
+using com.bosch.iot.suite.edge.containers.Error ; 1.0.0
+
+entity ManifestState {
+    mandatory manifest as Manifest "The manifest this state refers to"
+    mandatory status as ManifestStatus "The manifest application processing status"
+    optional error as Error "Provided if an error has occurred throughout the referred manifest's processing"
+}
