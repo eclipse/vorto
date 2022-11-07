@@ -1,0 +1,42 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.3.0
+displayname "ContainerOrchestrator"
+description "Provides the state-driven containers management functionality"
+using com.bosch.iot.suite.edge.containers.ManifestState ; 1.3.0
+using com.bosch.iot.suite.edge.containers.Manifest ; 1.3.0
+using com.bosch.iot.suite.edge.containers.Configuration ; 1.3.0
+using com.bosch.iot.suite.edge.containers.State ; 1.1.0
+
+functionblock ContainerOrchestrator {
+    status {
+        state as ManifestState "The current state with respect to last manifest processing done"
+    }
+
+    configuration {
+        manifest as Manifest "The last manifest that has been processed (result regardless)"
+    }
+
+    events {
+        created {
+            mandatory name as string "The name of the newly created container as a result of a manifest processing"
+            mandatory imageRef as string "The image reference used by the newly created container as a result of a manifest processing"
+            config as Configuration "The configuration of the newly created container as a result of a manifest processing"
+            mandatory createdAt as string "The creation timestamp of the newly created container as a result of a manifest processing"
+        }
+
+        stateChanged {
+            mandatory name as string "The name of a manifest's container with a changed state as a result of the manifest processing or simultaneously after the processing has been finished"
+            mandatory state as State "The new state of a manifest's container"
+        }
+
+        removed {
+            mandatory name as string "The name of a container that has been removed as a result of the manifest processing"
+        }
+    }
+
+    operations {
+        apply(manifest as Manifest) "Applies the desired state expressed via the provided manifest. It's important to note that this is the full state of the engine - i.e. as a result of a successful application - the running containers must be only those and exactly the same as the ones provided in the manifest"
+    }
+
+}

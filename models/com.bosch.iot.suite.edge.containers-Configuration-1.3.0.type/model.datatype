@@ -1,0 +1,48 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.containers
+version 1.3.0
+displayname "Configuration"
+description "Represents a fully featured container configuration supported by the Bosch IoT Edge Agent"
+using com.bosch.iot.suite.edge.containers.MountPoint ; 1.0.0
+using com.bosch.iot.suite.edge.containers.Device ; 1.0.0
+using com.bosch.iot.suite.edge.containers.RestartPolicy ; 1.0.0
+using com.bosch.iot.suite.edge.containers.PortMapping ; 1.0.0
+using com.bosch.iot.suite.edge.containers.LogConfiguration ; 1.0.0
+using com.bosch.iot.suite.edge.containers.Resources ; 1.0.0
+using com.bosch.iot.suite.edge.containers.NetworkMode ; 1.0.0
+using com.bosch.iot.suite.edge.containers.DecryptionConfiguration ; 1.0.0
+
+
+entity Configuration {
+	optional domainName as string "The container domain"
+
+	optional hostName as string "Host name for the container, if omitted the container name with suffix -host will be set"
+
+	optional multiple mountPoints as MountPoint "The container's mount points"
+
+	optional multiple env as string "Environmental variables that can be set for the container"
+
+	optional multiple cmd as string "Command with arguments that is executed when the container is started"
+
+	optional decryption as DecryptionConfiguration "Keys and recipients for image decryption"
+
+	optional multiple devices as Device "Host devices accessible by the container"
+
+	optional privileged as boolean "Indicates if the container must be run in privileged mode"
+
+	optional restartPolicy as RestartPolicy "Restart policy for the container instance"
+
+	optional multiple extraHosts as string "Host aliases to be added to the container's networking configuration"
+
+	optional multiple portMappings as PortMapping "Ports exposed from the container to the host"
+
+	optional networkMode as NetworkMode "The container's networking capabilities type based on the desired communication mode"
+
+	optional openStdin as boolean "Open stdin for interactive mode"
+
+	optional tty as boolean "Attach standard streams to a TTY, including stdin if it is not closed"
+
+	optional log as LogConfiguration "Represents the logging configuration for the container"
+
+	optional resources as Resources "Represents the resource limits for the container. By default, a container has no resource constraints."
+}

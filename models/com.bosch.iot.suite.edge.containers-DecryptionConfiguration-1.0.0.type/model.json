@@ -1,0 +1,55 @@
+{
+  "root" : {
+    "name" : "DecryptionConfiguration",
+    "namespace" : "com.bosch.iot.suite.edge.containers",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.containers:DecryptionConfiguration:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.containers:DecryptionConfiguration:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DecryptionConfiguration",
+        "namespace" : "com.bosch.iot.suite.edge.containers",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.containers:DecryptionConfiguration:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "DecryptionConfiguration",
+      "description" : "Represents the data needed for image decryption",
+      "category" : null,
+      "fileName" : "DecryptionConfiguration.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "keys",
+        "description" : "Private keys (GPG private key ring, JWE or PKCS7) used for decrypting the container's image, the format is: filepath_private_key[:password]",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "recipients",
+        "description" : "Recipients (only for PKCS7 and must be an x509) used for decrypting the container's image, the format is: pkcs7:filepath_x509_certificate",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}
