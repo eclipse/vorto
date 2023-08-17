@@ -1,0 +1,12 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "SoftwareNode"
+description "Represents a software node"
+
+using com.bosch.iot.suite.edge.update.InventoryNode ; 1.0.0
+using com.bosch.iot.suite.edge.update.SoftwareType ; 1.0.0
+
+entity SoftwareNode extends InventoryNode {
+    type as SoftwareType
+}

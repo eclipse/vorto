@@ -1,0 +1,21 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "ActionStatusType"
+description "Represents the possible status values for an update action"
+
+enum ActionStatusType {
+    IDENTIFIED,
+    DOWNLOADING,
+    DOWNLOAD_FAILURE,
+    DOWNLOAD_SUCCESS,
+    UPDATING,
+    UPDATE_FAILURE,
+    UPDATE_SUCCESS,
+    REMOVING,
+    REMOVAL_FAILURE,
+    REMOVAL_SUCCESS,
+    ACTIVATING,
+    ACTIVATION_FAILURE,
+    ACTIVATION_SUCCESS
+}

@@ -1,0 +1,134 @@
+{
+  "root" : {
+    "name" : "InventoryNode",
+    "namespace" : "com.bosch.iot.suite.edge.update",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.update:InventoryNode:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.update:InventoryNode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "InventoryNode",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:InventoryNode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Inventory Node",
+      "description" : "Represents a base for both software and hardware nodes",
+      "category" : null,
+      "fileName" : "InventoryNode.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "KeyValuePair",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "id",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "version",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "parameters",
+        "description" : null,
+        "type" : {
+          "name" : "KeyValuePair",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "KeyValuePair",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "KeyValuePair",
+      "description" : "Represents key/value string pair",
+      "category" : null,
+      "fileName" : "KeyValuePair.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "key",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

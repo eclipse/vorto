@@ -1,0 +1,32 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "UpdateManager"
+description "Provides orchestration of OTA Updates towards a target device in a smart way"
+using com.bosch.iot.suite.edge.update.DesiredState ; 1.0.0
+using com.bosch.iot.suite.edge.update.DesiredStateFeedback ; 1.0.0
+using com.bosch.iot.suite.edge.update.Inventory ; 1.0.0
+
+functionblock UpdateManager {
+
+    status {
+        domain as string "The domain of the Update Manager"
+        activityId as string "The activity id of the last operation"
+        timestamp as long "The timestamp of the last operation"
+        inventory as Inventory "The inventory graph representing software and hardware state of the device after the last operation"
+    }
+     
+    events {
+        feedback {
+            activityId as string "The activity id of the ongoing update"
+            timestamp as long "The timestamp of the feedback"
+            desiredStateFeedback as DesiredStateFeedback "The status feedback of the ongoing update"
+        } "A feedback that shows the current status of the ongoing update activity"
+    }
+ 
+    operations {
+        apply(activityId as string, timestamp as long, desiredState as DesiredState) "Applies a desired state to the device" 
+        refresh(activityId as string, timestamp as long) "Reads the current state from the device and updates the status of the Update Manager"
+    }
+
+}

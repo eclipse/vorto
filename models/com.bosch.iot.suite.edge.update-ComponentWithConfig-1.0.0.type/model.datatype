@@ -1,0 +1,12 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "ComponentWithConfig"
+description "Represents a desired state component with additional key-value configuration pairs"
+
+using com.bosch.iot.suite.edge.update.KeyValuePair ; 1.0.0
+using com.bosch.iot.suite.edge.update.Component ; 1.0.0
+
+entity ComponentWithConfig extends Component {
+    multiple config as KeyValuePair
+}

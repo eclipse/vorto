@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "SoftwareType"
+description "Represents the type of a software node"
+
+enum SoftwareType {
+    IMAGE,
+    RAW,
+    DATA,
+    APPLICATION,
+    CONTAINER
+}

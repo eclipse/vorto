@@ -1,0 +1,31 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "StatusType"
+description "Represents the possible values for the desired state feedback status"
+
+enum StatusType {
+    IDENTIFYING,
+    IDENTIFIED,
+    IDENTIFICATION_FAILED,
+    RUNNING,
+    COMPLETED,
+    INCOMPLETE,
+    INCOMPLETE_INCONSISTENT,
+    SUPERSEDED,
+    DOWNLOADING,
+    DOWNLOAD_SUCCESS,
+    DOWNLOAD_FAILURE,
+    ROLLBACK,
+    ROLLBACK_SUCCESS,
+    ROLLBACK_FAILURE,
+    UPDATING,
+    UPDATE_SUCCESS,
+    UPDATE_FAILURE,
+    ACTIVATING,
+    ACTIVATION_SUCCESS,
+    ACTIVATION_FAILURE,
+    CLEANUP,
+    CLEANUP_SUCCESS,
+    CLEANUP_FAILURE
+}

@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "Association"
+description "Represents a link between inventory(software/hardware) nodes"
+
+entity Association {
+    sourceId as string
+    targetId as string
+}

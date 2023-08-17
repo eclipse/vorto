@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "Action"
+description "Represents an action that is performed during an update procedure"
+
+using com.bosch.iot.suite.edge.update.Component ; 1.0.0
+using com.bosch.iot.suite.edge.update.ActionStatusType ; 1.0.0
+
+entity Action {
+    component as Component
+    status as ActionStatusType
+    progress as int
+    message as string
+}

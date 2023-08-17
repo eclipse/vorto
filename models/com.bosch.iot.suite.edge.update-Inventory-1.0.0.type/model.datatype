@@ -1,0 +1,15 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "Inventory"
+description "Represents graph that provides a view on the hardware and software landscape within a device"
+
+using com.bosch.iot.suite.edge.update.HardwareNode ; 1.0.0
+using com.bosch.iot.suite.edge.update.SoftwareNode ; 1.0.0
+using com.bosch.iot.suite.edge.update.Association ; 1.0.0
+
+entity Inventory {
+    multiple hardwareNodes as HardwareNode
+    multiple softwareNodes as SoftwareNode
+    multiple associations as Association
+}

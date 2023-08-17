@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "Component"
+description "Represents a desired state component"
+
+entity Component {
+    id as string
+    version as string
+}

@@ -1,0 +1,10 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "KeyValuePair"
+description "Represents key/value string pair"
+
+entity KeyValuePair {
+    key as string
+    value as string
+}
