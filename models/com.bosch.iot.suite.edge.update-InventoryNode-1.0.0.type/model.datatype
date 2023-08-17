@@ -1,0 +1,14 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "Inventory Node"
+description "Represents a base for both software and hardware nodes"
+
+using com.bosch.iot.suite.edge.update.KeyValuePair ; 1.0.0
+
+entity InventoryNode {
+    id as string
+    version as string
+    name as string
+    multiple parameters as KeyValuePair
+}

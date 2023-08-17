@@ -1,0 +1,1503 @@
+{
+  "root" : {
+    "name" : "UpdateManager",
+    "namespace" : "com.bosch.iot.suite.edge.update",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.update:UpdateManager:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.update:InventoryNode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "InventoryNode",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:InventoryNode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Inventory Node",
+      "description" : "Represents a base for both software and hardware nodes",
+      "category" : null,
+      "fileName" : "InventoryNode.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "KeyValuePair",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "id",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "version",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "name",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "parameters",
+        "description" : null,
+        "type" : {
+          "name" : "KeyValuePair",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:DesiredState:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DesiredState",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:DesiredState:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "DesiredState",
+      "description" : "Represents a desired state to be applied on a device",
+      "category" : null,
+      "fileName" : "DesiredState.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Baseline",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Baseline:1.0.0"
+      }, {
+        "name" : "Domain",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Domain:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "baselines",
+        "description" : null,
+        "type" : {
+          "name" : "Baseline",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:Baseline:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "domains",
+        "description" : null,
+        "type" : {
+          "name" : "Domain",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:Domain:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:UpdateManager:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "UpdateManager",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:UpdateManager:1.0.0"
+      },
+      "type" : "Functionblock",
+      "displayName" : "UpdateManager",
+      "description" : "Provides orchestration of OTA Updates towards a target device in a smart way",
+      "category" : null,
+      "fileName" : "UpdateManager.fbmodel",
+      "modelType" : "FunctionblockModel",
+      "references" : [ {
+        "name" : "DesiredState",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:DesiredState:1.0.0"
+      }, {
+        "name" : "DesiredStateFeedback",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:DesiredStateFeedback:1.0.0"
+      }, {
+        "name" : "Inventory",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Inventory:1.0.0"
+      } ],
+      "configurationProperties" : [ ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "domain",
+        "description" : "The domain of the Update Manager",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "activityId",
+        "description" : "The activity id of the last operation",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "timestamp",
+        "description" : "The timestamp of the last operation",
+        "type" : "LONG",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "inventory",
+        "description" : "The inventory graph representing software and hardware state of the device after the last operation",
+        "type" : {
+          "name" : "Inventory",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:Inventory:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ {
+        "name" : "feedback",
+        "properties" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "activityId",
+          "description" : "The activity id of the ongoing update",
+          "type" : "STRING",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "timestamp",
+          "description" : "The timestamp of the feedback",
+          "type" : "LONG",
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : true,
+          "name" : "desiredStateFeedback",
+          "description" : "The status feedback of the ongoing update",
+          "type" : {
+            "name" : "DesiredStateFeedback",
+            "namespace" : "com.bosch.iot.suite.edge.update",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.update:DesiredStateFeedback:1.0.0"
+          },
+          "constraints" : [ ],
+          "attributes" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ]
+      } ],
+      "operations" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "apply",
+        "description" : "Applies a desired state to the device",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "activityId",
+          "description" : null,
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "timestamp",
+          "description" : null,
+          "type" : "LONG",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "desiredState",
+          "description" : null,
+          "type" : {
+            "name" : "DesiredState",
+            "namespace" : "com.bosch.iot.suite.edge.update",
+            "version" : "1.0.0",
+            "prettyFormat" : "com.bosch.iot.suite.edge.update:DesiredState:1.0.0"
+          },
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : false
+        } ],
+        "breakable" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "name" : "refresh",
+        "description" : "Reads the current state from the device and updates the status of the Update Manager",
+        "result" : null,
+        "params" : [ {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "activityId",
+          "description" : null,
+          "type" : "STRING",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        }, {
+          "targetPlatformKey" : null,
+          "stereotypes" : [ ],
+          "mappingReference" : null,
+          "mandatory" : false,
+          "name" : "timestamp",
+          "description" : null,
+          "type" : "LONG",
+          "constraints" : [ ],
+          "multiple" : false,
+          "primitive" : true
+        } ],
+        "breakable" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:Action:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Action",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Action:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Action",
+      "description" : "Represents an action that is performed during an update procedure",
+      "category" : null,
+      "fileName" : "Action.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Component",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Component:1.0.0"
+      }, {
+        "name" : "ActionStatusType",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "component",
+        "description" : null,
+        "type" : {
+          "name" : "Component",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:Component:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "status",
+        "description" : null,
+        "type" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "progress",
+        "description" : null,
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "message",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:StatusType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "StatusType",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "StatusType",
+      "description" : "Represents the possible values for the desired state feedback status",
+      "category" : null,
+      "fileName" : "StatusType.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "IDENTIFYING",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "IDENTIFIED",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "IDENTIFICATION_FAILED",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "RUNNING",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "COMPLETED",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "INCOMPLETE",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "INCOMPLETE_INCONSISTENT",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "SUPERSEDED",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADING",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOAD_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOAD_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "ROLLBACK",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "ROLLBACK_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "ROLLBACK_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "UPDATING",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "UPDATE_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "UPDATE_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVATING",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVATION_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVATION_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "CLEANUP",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "CLEANUP_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      }, {
+        "name" : "CLEANUP_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "KeyValuePair",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "KeyValuePair",
+      "description" : "Represents key/value string pair",
+      "category" : null,
+      "fileName" : "KeyValuePair.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "key",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "value",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:Component:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Component",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Component:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Component",
+      "description" : "Represents a desired state component",
+      "category" : null,
+      "fileName" : "Component.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "id",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "version",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:SoftwareNode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SoftwareNode",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareNode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "SoftwareNode",
+      "description" : "Represents a software node",
+      "category" : null,
+      "fileName" : "SoftwareNode.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "InventoryNode",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:InventoryNode:1.0.0"
+      }, {
+        "name" : "SoftwareType",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "type",
+        "description" : null,
+        "type" : {
+          "name" : "SoftwareType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      } ],
+      "superType" : {
+        "name" : "InventoryNode",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:InventoryNode:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.update:DesiredStateFeedback:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "DesiredStateFeedback",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:DesiredStateFeedback:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "DesiredStateFeedback",
+      "description" : "Represents a status feedback of the ongoing update procedure",
+      "category" : null,
+      "fileName" : "DesiredStateFeedback.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "Component",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Component:1.0.0"
+      }, {
+        "name" : "StatusType",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+      }, {
+        "name" : "Action",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Action:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "baseline",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "status",
+        "description" : null,
+        "type" : {
+          "name" : "StatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:StatusType:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "message",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "actions",
+        "description" : null,
+        "type" : {
+          "name" : "Action",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:Action:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:HardwareNode:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "HardwareNode",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:HardwareNode:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "HardwareNode",
+      "description" : "Represents a hardware node",
+      "category" : null,
+      "fileName" : "HardwareNode.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "InventoryNode",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:InventoryNode:1.0.0"
+      }, {
+        "name" : "SoftwareType",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "addressable",
+        "description" : null,
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : {
+        "name" : "InventoryNode",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:InventoryNode:1.0.0"
+      }
+    },
+    "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SoftwareType",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "SoftwareType",
+      "description" : "Represents the type of a software node",
+      "category" : null,
+      "fileName" : "SoftwareType.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "IMAGE",
+        "description" : null,
+        "parent" : {
+          "name" : "SoftwareType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+        }
+      }, {
+        "name" : "RAW",
+        "description" : null,
+        "parent" : {
+          "name" : "SoftwareType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+        }
+      }, {
+        "name" : "DATA",
+        "description" : null,
+        "parent" : {
+          "name" : "SoftwareType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+        }
+      }, {
+        "name" : "APPLICATION",
+        "description" : null,
+        "parent" : {
+          "name" : "SoftwareType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+        }
+      }, {
+        "name" : "CONTAINER",
+        "description" : null,
+        "parent" : {
+          "name" : "SoftwareType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.update:Association:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Association",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Association:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Association",
+      "description" : "Represents a link between inventory(software/hardware) nodes",
+      "category" : null,
+      "fileName" : "Association.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sourceId",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "targetId",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:Inventory:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Inventory",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Inventory:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Inventory",
+      "description" : "Represents graph that provides a view on the hardware and software landscape within a device",
+      "category" : null,
+      "fileName" : "Inventory.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "HardwareNode",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:HardwareNode:1.0.0"
+      }, {
+        "name" : "SoftwareNode",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareNode:1.0.0"
+      }, {
+        "name" : "Association",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Association:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "hardwareNodes",
+        "description" : null,
+        "type" : {
+          "name" : "HardwareNode",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:HardwareNode:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "softwareNodes",
+        "description" : null,
+        "type" : {
+          "name" : "SoftwareNode",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareNode:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "associations",
+        "description" : null,
+        "type" : {
+          "name" : "Association",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:Association:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:Baseline:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Baseline",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Baseline:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Baseline",
+      "description" : "Represents domain or cross-domain dependencies between components",
+      "category" : null,
+      "fileName" : "Baseline.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "title",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "description",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "preconditions",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "components",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : true
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ActionStatusType",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ActionStatusType",
+      "description" : "Represents the possible status values for an update action",
+      "category" : null,
+      "fileName" : "ActionStatusType.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "IDENTIFIED",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADING",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOAD_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOAD_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "UPDATING",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "UPDATE_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "UPDATE_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "REMOVING",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "REMOVAL_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "REMOVAL_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVATING",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVATION_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVATION_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      } ]
+    },
+    "com.bosch.iot.suite.edge.update:Domain:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Domain",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Domain:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Domain",
+      "description" : "Represents a desired state for a single domain",
+      "category" : null,
+      "fileName" : "Domain.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "KeyValuePair",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0"
+      }, {
+        "name" : "ComponentWithConfig",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:ComponentWithConfig:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "id",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "config",
+        "description" : null,
+        "type" : {
+          "name" : "KeyValuePair",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "components",
+        "description" : null,
+        "type" : {
+          "name" : "ComponentWithConfig",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ComponentWithConfig:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : null
+    },
+    "com.bosch.iot.suite.edge.update:ComponentWithConfig:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ComponentWithConfig",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:ComponentWithConfig:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ComponentWithConfig",
+      "description" : "Represents a desired state component with additional key-value configuration pairs",
+      "category" : null,
+      "fileName" : "ComponentWithConfig.type",
+      "modelType" : "EntityModel",
+      "references" : [ {
+        "name" : "KeyValuePair",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0"
+      }, {
+        "name" : "Component",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Component:1.0.0"
+      } ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "config",
+        "description" : null,
+        "type" : {
+          "name" : "KeyValuePair",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:KeyValuePair:1.0.0"
+        },
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : true,
+        "primitive" : false
+      } ],
+      "superType" : {
+        "name" : "Component",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Component:1.0.0"
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "root" : {
+    "name" : "Association",
+    "namespace" : "com.bosch.iot.suite.edge.update",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.update:Association:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.update:Association:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "Association",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:Association:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "Association",
+      "description" : "Represents a link between inventory(software/hardware) nodes",
+      "category" : null,
+      "fileName" : "Association.type",
+      "modelType" : "EntityModel",
+      "references" : [ ],
+      "properties" : [ {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "sourceId",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      }, {
+        "targetPlatformKey" : null,
+        "stereotypes" : [ ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "targetId",
+        "description" : null,
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ ],
+        "multiple" : false,
+        "primitive" : true
+      } ],
+      "superType" : null
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "root" : {
+    "name" : "SoftwareType",
+    "namespace" : "com.bosch.iot.suite.edge.update",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "SoftwareType",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "SoftwareType",
+      "description" : "Represents the type of a software node",
+      "category" : null,
+      "fileName" : "SoftwareType.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "IMAGE",
+        "description" : null,
+        "parent" : {
+          "name" : "SoftwareType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+        }
+      }, {
+        "name" : "RAW",
+        "description" : null,
+        "parent" : {
+          "name" : "SoftwareType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+        }
+      }, {
+        "name" : "DATA",
+        "description" : null,
+        "parent" : {
+          "name" : "SoftwareType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+        }
+      }, {
+        "name" : "APPLICATION",
+        "description" : null,
+        "parent" : {
+          "name" : "SoftwareType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+        }
+      }, {
+        "name" : "CONTAINER",
+        "description" : null,
+        "parent" : {
+          "name" : "SoftwareType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:SoftwareType:1.0.0"
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,16 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "DesiredStateFeedback"
+description "Represents a status feedback of the ongoing update procedure"
+
+using com.bosch.iot.suite.edge.update.Component ; 1.0.0
+using com.bosch.iot.suite.edge.update.StatusType ; 1.0.0
+using com.bosch.iot.suite.edge.update.Action ; 1.0.0
+
+entity DesiredStateFeedback {
+    baseline as string
+    status as StatusType
+    message as string
+    multiple actions as Action
+}

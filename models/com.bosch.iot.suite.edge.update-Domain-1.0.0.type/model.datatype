@@ -1,0 +1,14 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "Domain"
+description "Represents a desired state for a single domain"
+
+using com.bosch.iot.suite.edge.update.KeyValuePair ; 1.0.0
+using com.bosch.iot.suite.edge.update.ComponentWithConfig ; 1.0.0
+
+entity Domain {
+    id as string
+    multiple config as KeyValuePair
+    multiple components as ComponentWithConfig
+}

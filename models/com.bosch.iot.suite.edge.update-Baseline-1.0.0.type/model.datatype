@@ -1,0 +1,12 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "Baseline"
+description "Represents domain or cross-domain dependencies between components"
+
+entity Baseline {
+    title as string
+    description as string
+    preconditions as string
+    multiple components as string
+}

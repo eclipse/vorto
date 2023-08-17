@@ -1,0 +1,147 @@
+{
+  "root" : {
+    "name" : "ActionStatusType",
+    "namespace" : "com.bosch.iot.suite.edge.update",
+    "version" : "1.0.0",
+    "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+  },
+  "models" : {
+    "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0" : {
+      "targetPlatformKey" : null,
+      "stereotypes" : [ ],
+      "mappingReference" : null,
+      "vortolang" : "1.0",
+      "id" : {
+        "name" : "ActionStatusType",
+        "namespace" : "com.bosch.iot.suite.edge.update",
+        "version" : "1.0.0",
+        "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+      },
+      "type" : "Datatype",
+      "displayName" : "ActionStatusType",
+      "description" : "Represents the possible status values for an update action",
+      "category" : null,
+      "fileName" : "ActionStatusType.type",
+      "modelType" : "EnumModel",
+      "references" : [ ],
+      "literals" : [ {
+        "name" : "IDENTIFIED",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOADING",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOAD_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "DOWNLOAD_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "UPDATING",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "UPDATE_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "UPDATE_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "REMOVING",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "REMOVAL_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "REMOVAL_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVATING",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVATION_FAILURE",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      }, {
+        "name" : "ACTIVATION_SUCCESS",
+        "description" : null,
+        "parent" : {
+          "name" : "ActionStatusType",
+          "namespace" : "com.bosch.iot.suite.edge.update",
+          "version" : "1.0.0",
+          "prettyFormat" : "com.bosch.iot.suite.edge.update:ActionStatusType:1.0.0"
+        }
+      } ]
+    }
+  }
+}

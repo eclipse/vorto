@@ -1,0 +1,13 @@
+vortolang 1.0
+namespace com.bosch.iot.suite.edge.update
+version 1.0.0
+displayname "DesiredState"
+description "Represents a desired state to be applied on a device"
+
+using com.bosch.iot.suite.edge.update.Baseline ; 1.0.0
+using com.bosch.iot.suite.edge.update.Domain ; 1.0.0
+
+entity DesiredState {
+    multiple baselines as Baseline
+    multiple domains as Domain
+}
