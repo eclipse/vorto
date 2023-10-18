@@ -15,6 +15,7 @@ package org.eclipse.vorto.mapping.engine;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -120,7 +121,7 @@ public class JsonMappingLoadTest {
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)
 	public void withoutConverter1() throws Exception {
-		int r = new Random().nextInt(2 + 1);
+		int r = new SecureRandom().nextInt(2 + 1);
 		InfomodelValue mappedOutput = testCaseOneMapper.mapSource(deserializer.deserialize(testCaseOneJsonInput[r]));	
 		EntityPropertyValue temperatureValue = (EntityPropertyValue) mappedOutput.get("outdoorTemperature")
 				.getStatusProperty("value").get();
@@ -130,7 +131,7 @@ public class JsonMappingLoadTest {
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_2, durationMs = TEST_DURATION_2, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_2, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_2)
 	public void withoutConverter2() throws Exception {
-		int r = new Random().nextInt(2 + 1);
+		int r = new SecureRandom().nextInt(2 + 1);
 		InfomodelValue mappedOutput = testCaseOneMapper.mapSource(deserializer.deserialize(testCaseOneJsonInput[r]));	
 		EntityPropertyValue temperatureValue = (EntityPropertyValue) mappedOutput.get("outdoorTemperature")
 				.getStatusProperty("value").get();
@@ -140,7 +141,7 @@ public class JsonMappingLoadTest {
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_3, durationMs = TEST_DURATION_3, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_3, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_3)
 	public void withoutConverter3() throws Exception {
-		int r = new Random().nextInt(2 + 1);
+		int r = new SecureRandom().nextInt(2 + 1);
 		InfomodelValue mappedOutput = testCaseOneMapper.mapSource(deserializer.deserialize(testCaseOneJsonInput[r]));	
 		EntityPropertyValue temperatureValue = (EntityPropertyValue) mappedOutput.get("outdoorTemperature")
 				.getStatusProperty("value").get();
@@ -150,7 +151,7 @@ public class JsonMappingLoadTest {
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_4, durationMs = TEST_DURATION_4, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_4, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_4)
 	public void withoutConverter4() throws Exception {
-		int r = new Random().nextInt(2 + 1);
+		int r = new SecureRandom().nextInt(2 + 1);
 		InfomodelValue mappedOutput = testCaseOneMapper.mapSource(deserializer.deserialize(testCaseOneJsonInput[r]));	
 		EntityPropertyValue temperatureValue = (EntityPropertyValue) mappedOutput.get("outdoorTemperature")
 				.getStatusProperty("value").get();
@@ -202,7 +203,7 @@ public class JsonMappingLoadTest {
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_1, durationMs = TEST_DURATION_1, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_1, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_1)
 	public void builtInConverterAndJs1() throws Exception {
-		int r = new Random().nextInt(2 + 1);
+		int r = new SecureRandom().nextInt(2 + 1);
 		InfomodelValue mappedOutput = testCaseThreeMapper.mapSource(gson.fromJson(testCaseThreeJsonInput[r], Object.class));
 		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
@@ -214,7 +215,7 @@ public class JsonMappingLoadTest {
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_2, durationMs = TEST_DURATION_2, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_2, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_2)
 	public void builtInConverterAndJs2() throws Exception {
-		int r = new Random().nextInt(2 + 1);
+		int r = new SecureRandom().nextInt(2 + 1);
 		InfomodelValue mappedOutput = testCaseThreeMapper.mapSource(gson.fromJson(testCaseThreeJsonInput[r], Object.class));
 		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
@@ -226,7 +227,7 @@ public class JsonMappingLoadTest {
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_3, durationMs = TEST_DURATION_3, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_3, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_3)
 	public void builtInConverterAndJs3() throws Exception {
-		int r = new Random().nextInt(2 + 1);
+		int r = new SecureRandom().nextInt(2 + 1);
 		InfomodelValue mappedOutput = testCaseThreeMapper.mapSource(gson.fromJson(testCaseThreeJsonInput[r], Object.class));
 		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
@@ -238,7 +239,7 @@ public class JsonMappingLoadTest {
 	@Test
 	@JUnitPerfTest(threads = THREAD_AMOUNT_4, durationMs = TEST_DURATION_4, rampUpPeriodMs = RAMP_PERIOD, warmUpMs = WARMUP_DURATION_4, maxExecutionsPerSecond = EXECUTIONS_PER_SECOND_4)
 	public void builtInConverterAndJs4() throws Exception {
-		int r = new Random().nextInt(2 + 1);
+		int r = new SecureRandom().nextInt(2 + 1);
 		InfomodelValue mappedOutput = testCaseThreeMapper.mapSource(gson.fromJson(testCaseThreeJsonInput[r], Object.class));
 		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
