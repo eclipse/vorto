@@ -91,6 +91,9 @@ public class ModelIdHelper {
     }
 
     public String next() {
+      if (!hasNext()) {
+        throw new java.util.NoSuchElementException();
+      }
       return this.enumeration.nextToken();
     }
 
