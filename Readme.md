@@ -20,7 +20,7 @@
 Vorto comes with tons of examples, that demonstrate you the use of Vorto in IoT Solution Development. 
 
 One of these examples, is the Vorto Dashboard, that visualizes sensor data in Vorto Function Block compliant UI widgets:
-[Click here for demo](http://vorto-dashboard.eu-central-1.elasticbeanstalk.com/)
+[Click here for demo](https://github.com/eclipse/vorto-examples/blob/master/vorto-dashboard/README.md)
 
 <img src="https://github.com/eclipse/vorto-examples/blob/master/vorto-dashboard/assets/deviceDashboard.png" width="49%"/> <img src="https://github.com/eclipse/vorto-examples/blob/master/vorto-dashboard/assets/locatePage.png" width="49%"/>
 
